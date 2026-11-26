@@ -58,9 +58,10 @@ section{margin-top:26px}
 .meter{position:relative;height:14px;background:var(--bar);border-radius:7px;margin:14px 0 6px;overflow:hidden}
 .meter i{position:absolute;left:0;top:0;bottom:0;background:var(--bar-on);border-radius:7px 0 0 7px}
 .meterlab{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3)}
-.trend{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:2px 0 0}
-.trend b{font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
-.trend span{color:var(--ink3);font-size:12.5px;white-space:nowrap}
+.trend{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:6px 0 0}
+.trend b{display:block;font-size:26px;line-height:1.15;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+.trend span{color:var(--ink2);font-size:13px;white-space:nowrap}
+.trend .arrow{padding-bottom:4px}
 .trend .arrow{font-size:18px;color:var(--ink3)}
 table{border-collapse:collapse;width:100%;font-size:15px}
 th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
@@ -123,7 +124,7 @@ a{color:var(--ink);text-underline-offset:3px}
       <p class="readout num" id="readout"></p>
     </div>
     <details>
-      <summary>看表格（含 8、9、10 月三期对比）</summary>
+      <summary>看表格（2026 年 8、9、10 月三期对比）</summary>
       <div style="overflow-x:auto"><table id="tbl"></table></div>
     </details>
   </section>
@@ -152,7 +153,7 @@ a{color:var(--ink);text-underline-offset:3px}
    To update: append a new snapshot object and update BULLETIN / COMPLETE_THROUGH. */
 const N = null;
 const SNAPS = [
-  { asof: '2026-08-05', short: '8.05', d: {
+  { asof: '2026-08-05', short: '8 月 5 日', d: {
     prior: [N,N,16,N,13,11,N,N,N,15,16,N],
     2017: [N,N,0,N,N,N,N,N,N,N,N,N],
     2018: [N,N,N,N,N,0,0,N,N,N,N,0],
@@ -162,7 +163,7 @@ const SNAPS = [
     2022: [32,31,20,31,28,34,50,53,43,54,105,223],
     2023: [257,281,489,520,652,642,610,527,565,485,525,0],
     2024: [0,0,0,0,0,0,0,0,0,0,0,0] } },
-  { asof: '2026-09-03', short: '9.03', d: {
+  { asof: '2026-09-03', short: '9 月 3 日', d: {
     prior: [N,N,17,N,13,N,N,N,N,14,15,N],
     2017: [N,N,0,N,N,N,N,N,N,N,N,N],
     2018: [N,N,N,N,N,0,N,N,N,N,N,N],
@@ -172,7 +173,7 @@ const SNAPS = [
     2022: [26,28,19,30,33,31,45,54,42,53,99,208],
     2023: [230,251,450,462,602,593,608,526,568,485,524,0],
     2024: [0,0,0,0,0,0,0,0,0,0,0,0] } },
-  { asof: '2026-10-05', short: '10.05', d: {
+  { asof: '2026-10-05', short: '10 月 5 日', d: {
     prior: [N,N,19,N,11,N,N,N,N,14,11,N],
     2017: [N,N,0,N,N,N,N,N,N,N,N,N],
     2018: [N,N,N,N,N,0,0,N,N,N,N,N],
@@ -268,12 +269,12 @@ function render(){
   let delta = '';
   if (first.n !== null && last.n !== null && first.n > 0){
     const diff = last.n - first.n, p = diff/first.n*100;
-    delta = diff < 0 ? `两个月少了 ${fmt(-diff)} 份（${p.toFixed(0)}%）` : diff > 0 ? `两个月多了 ${fmt(diff)} 份（新递交的）` : '两个月没变';
+    delta = diff < 0 ? `8 月到 10 月少了 ${fmt(-diff)} 份（${p.toFixed(0)}%）` : diff > 0 ? `8 月到 10 月多了 ${fmt(diff)} 份（新递交的）` : '8 月到 10 月没变';
   } else if (first.n === 0 && (last.n === null || last.n > 0)) delta = '10 月才开始有人递，后面几期还会涨';
   else if (y >= 2025 || (first.n === 0 && last.n === 0)) delta = '这个月份的 PD 还没有人递 485';
-  h += `<div class="tile wide"><p class="lab">和你同月 PD（${y} 年 ${m} 月）的，还剩多少份</p>
-    <div class="trend num">${c.map((s,i)=>`${i?'<span class="arrow" aria-hidden="true">→</span>':''}<span><b>${showCell(s.n)}</b> ${s.short}</span>`).join('')}</div>
-    <p class="sub">${delta}</p></div>`;
+  h += `<div class="tile wide"><p class="lab">和你同月 PD（${y} 年 ${m} 月）的，USCIS 每期统计时还剩多少份</p>
+    <div class="trend num">${c.map((s,i)=>`${i?'<span class="arrow" aria-hidden="true">→</span>':''}<span>${s.short}<b>${showCell(s.n)}</b></span>`).join('')}</div>
+    <p class="sub">日期是 USCIS 每期数据的统计日（2026 年）。${delta}</p></div>`;
 
   // ETA
   if (r.state === 'canfile'){
